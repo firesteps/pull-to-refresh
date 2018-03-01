@@ -87,9 +87,9 @@ open class ESRefreshComponent: UIView {
         super.willMove(toSuperview: newSuperview)
         /// Remove observer from superview immediately
         self.removeObserver()
-        DispatchQueue.main.async { [weak self, newSuperview] in
+        DispatchQueue.main.async { [weak self] in
             /// Add observer to new superview in next runloop
-            self?.addObserver(newSuperview)
+            self?.addObserver()
         }
     }
     
@@ -170,8 +170,8 @@ extension ESRefreshComponent /* KVO methods */ {
         isIgnoreObserving = ignore
     }
     
-    fileprivate func addObserver(_ view: UIView?) {
-        if let scrollView = view as? UIScrollView, !isObservingScrollView {
+    fileprivate func addObserver() {
+        if let scrollView = superview as? UIScrollView, !isObservingScrollView {
             scrollView.addObserver(self, forKeyPath: ESRefreshComponent.offsetKeyPath, options: [.initial, .new], context: &ESRefreshComponent.context)
             scrollView.addObserver(self, forKeyPath: ESRefreshComponent.contentSizeKeyPath, options: [.initial, .new], context: &ESRefreshComponent.context)
             isObservingScrollView = true
